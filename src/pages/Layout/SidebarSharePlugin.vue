@@ -99,7 +99,8 @@
       },
       minimizeSidebar() {
         this.$sidebar.toggleMinimize();
-      }
+      },
+      
     }
   };
 </script>

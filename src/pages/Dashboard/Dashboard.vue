@@ -1,13 +1,12 @@
 <template>
   <div class="row">
-    <!-- Big Chart -->
     <div class="col-12">
       <card type="chart">
         <template slot="header">
           <div class="row">
             <div class="col-sm-6" :class="isRTL ? 'text-right' : 'text-left'">
-              <h5 class="card-category">Total shipments</h5>
-              <h2 class="card-title">Performance</h2>
+              <h5 class="card-category">Water Temperature (°C)</h5>
+              <h2 class="card-title">Temperature Variation</h2>
             </div>
             <div class="col-sm-6 d-flex d-sm-block">
               <div
@@ -51,8 +50,13 @@
         </div>
       </card>
     </div>
-    <!-- Stats Cards -->
-    <div class="col-lg-3 col-md-6" v-for="card in statsCards" :key="card.title">
+
+    <!-- Stats Cards (exemple d'indicateurs clés) -->
+    <div
+      class="col-lg-3 col-md-6"
+      v-for="card in statsCards"
+      :key="card.title"
+    >
       <stats-card
         :title="card.title"
         :sub-title="card.subTitle"
@@ -63,13 +67,13 @@
       </stats-card>
     </div>
 
-    <!-- Small charts -->
+    <!-- Small charts (3 colonnes) -->
     <div class="col-lg-4" :class="{ 'text-right': isRTL }">
       <card type="chart">
         <template slot="header">
-          <h5 class="card-category">Total Shipments</h5>
+          <h5 class="card-category">CO₂ Emissions</h5>
           <h3 class="card-title">
-            <i class="tim-icons icon-bell-55 text-primary "></i> 763,215
+            <i class="tim-icons icon-bell-55 text-primary"></i> 763,215 µg/m³
           </h3>
         </template>
         <div class="chart-area">
@@ -84,12 +88,13 @@
         </div>
       </card>
     </div>
+
     <div class="col-lg-4" :class="{ 'text-right': isRTL }">
       <card type="chart">
         <template slot="header">
-          <h5 class="card-category">Daily Sales</h5>
+          <h5 class="card-category">Salinity</h5>
           <h3 class="card-title">
-            <i class="tim-icons icon-delivery-fast text-info "></i> 3,500€
+            <i class="tim-icons icon-delivery-fast text-info"></i> 35 PSU
           </h3>
         </template>
         <div class="chart-area">
@@ -103,12 +108,13 @@
         </div>
       </card>
     </div>
+
     <div class="col-lg-4" :class="{ 'text-right': isRTL }">
       <card type="chart">
         <template slot="header">
-          <h5 class="card-category">Completed tasks</h5>
+          <h5 class="card-category">Water pH</h5>
           <h3 class="card-title">
-            <i class="tim-icons icon-send text-success "></i> 12,100K
+            <i class="tim-icons icon-send text-success"></i> pH = 8.1
           </h3>
         </template>
         <div class="chart-area">
@@ -122,10 +128,13 @@
         </div>
       </card>
     </div>
+
+    <!-- "Tasks" (renommé ou conservé) -->
     <div class="col-lg-5">
       <card type="tasks" :header-classes="{ 'text-right': isRTL }">
         <template slot="header">
-          <h6 class="title d-inline">Tasks (5)</h6>
+          <!-- Par exemple, on peut renommer Tasks en Alerts -->
+          <h6 class="title d-inline">Alerts (5)</h6>
           <p class="card-category d-inline">Today</p>
           <base-dropdown
             menu-on-right=""
@@ -144,15 +153,24 @@
         </div>
       </card>
     </div>
+
+    <!-- Tableau de management (exemple : table capteurs) -->
     <div class="col-lg-7">
       <card class="card" :header-classes="{ 'text-right': isRTL }">
-        <h5 slot="header" class="card-title">Management table</h5>
-        <div class="table-responsive"><user-table></user-table></div>
+        <h5 slot="header" class="card-title">Sensors Table</h5>
+        <div class="table-responsive">
+          <user-table></user-table>
+        </div>
       </card>
     </div>
-    <div class="col-lg-12"><country-map-card></country-map-card></div>
+
+    <!-- Carte (par exemple, on garde le composant existant) -->
+    <div class="col-lg-12">
+      <country-map-card></country-map-card>
+    </div>
   </div>
 </template>
+
 <script>
 import LineChart from '@/components/Charts/LineChart';
 import BarChart from '@/components/Charts/BarChart';
@@ -164,11 +182,12 @@ import StatsCard from 'src/components/Cards/StatsCard';
 import config from '@/config';
 
 let bigChartData = [
-  [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
-  [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
-  [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
-]
-let bigChartLabels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+  [15, 17, 19, 20, 22, 25, 24, 22, 21, 20, 18, 16],
+  [14, 15, 16, 17, 18, 19, 19, 18, 18, 17, 16, 15], 
+  [10, 10, 11, 12, 12, 13, 14, 13, 12, 11, 10, 10]  
+];
+let bigChartLabels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
 let bigChartDatasetOptions = {
   fill: true,
   borderColor: config.colors.primary,
@@ -181,8 +200,8 @@ let bigChartDatasetOptions = {
   pointBorderWidth: 20,
   pointHoverRadius: 4,
   pointHoverBorderWidth: 15,
-  pointRadius: 4,
-}
+  pointRadius: 4
+};
 
 export default {
   components: {
@@ -197,29 +216,29 @@ export default {
     return {
       statsCards: [
         {
-          title: '150GB',
-          subTitle: 'Number',
+          title: '24°C',
+          subTitle: 'Temp. Eau',
           type: 'warning',
           icon: 'tim-icons icon-chat-33',
           footer: '<i class="tim-icons icon-refresh-01"></i> Update Now'
         },
         {
-          title: '+45K',
-          subTitle: 'Followers',
+          title: '45 µg/m³',
+          subTitle: 'Pollution',
           type: 'primary',
           icon: 'tim-icons icon-shape-star',
-          footer: '<i class="tim-icons icon-sound-wave"></i></i> Last Research'
+          footer: '<i class="tim-icons icon-sound-wave"></i> Last Research'
         },
         {
-          title: '150,000',
-          subTitle: 'Users',
+          title: '15 nœuds',
+          subTitle: 'Vitesse',
           type: 'info',
           icon: 'tim-icons icon-single-02',
-          footer: '<i class="tim-icons icon-trophy"></i> Customer feedback'
+          footer: '<i class="tim-icons icon-trophy"></i> Sensor feedback'
         },
         {
-          title: '23',
-          subTitle: 'Errors',
+          title: '8/10',
+          subTitle: 'Qualité',
           type: 'danger',
           icon: 'tim-icons icon-molecule-40',
           footer: '<i class="tim-icons icon-watch-time"></i> In the last hours'
@@ -228,16 +247,17 @@ export default {
       bigLineChart: {
         activeIndex: 0,
         chartData: {
-          datasets: [{
-            ...bigChartDatasetOptions,
-            data: bigChartData[0]
-          }],
+          datasets: [
+            {
+              ...bigChartDatasetOptions,
+              data: bigChartData[0]
+            }
+          ],
           labels: bigChartLabels
         },
         extraOptions: chartConfigs.purpleChartOptions,
         gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.4, 0],
-        categories: []
+        gradientStops: [1, 0.4, 0]
       },
       purpleLineChart: {
         extraOptions: chartConfigs.purpleChartOptions,
@@ -245,19 +265,13 @@ export default {
           labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
           datasets: [
             {
-              label: 'Data',
+              label: 'CO₂ Emissions',
               fill: true,
               borderColor: config.colors.primary,
               borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
               pointBackgroundColor: config.colors.primary,
               pointBorderColor: 'rgba(255,255,255,0)',
               pointHoverBackgroundColor: config.colors.primary,
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
               data: [80, 100, 70, 80, 120, 80]
             }
           ]
@@ -271,20 +285,13 @@ export default {
           labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV'],
           datasets: [
             {
-              label: 'My First dataset',
+              label: 'Water pH',
               fill: true,
               borderColor: config.colors.danger,
               borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
               pointBackgroundColor: config.colors.danger,
-              pointBorderColor: 'rgba(255,255,255,0)',
               pointHoverBackgroundColor: config.colors.danger,
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
-              data: [90, 27, 60, 12, 80]
+              data: [8.2, 8.0, 7.9, 8.1, 8.1]
             }
           ]
         },
@@ -298,16 +305,14 @@ export default {
       blueBarChart: {
         extraOptions: chartConfigs.barChartOptions,
         chartData: {
-          labels: ['USA', 'GER', 'AUS', 'UK', 'RO', 'BR'],
+          labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'],
           datasets: [
             {
-              label: 'Countries',
+              label: 'Salinity (PSU)',
               fill: true,
               borderColor: config.colors.info,
               borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              data: [53, 20, 10, 80, 100, 45]
+              data: [34, 35, 35, 36, 35, 34]
             }
           ]
         },
@@ -323,17 +328,25 @@ export default {
     isRTL() {
       return this.$rtl.isRTL;
     },
+
     bigLineChartCategories() {
-      return [{ name: 'Accounts', icon: 'tim-icons icon-single-02' }, { name: 'Purchases', icon: 'tim-icons icon-gift-2' }, { name: 'Sessions', icon: 'tim-icons icon-tap-02' }];
+      return [
+        { name: 'Surface', icon: 'tim-icons icon-single-02' },
+        { name: 'Mid-depth', icon: 'tim-icons icon-gift-2' },
+        { name: 'Deep water', icon: 'tim-icons icon-tap-02' }
+      ];
     }
   },
   methods: {
+
     initBigChart(index) {
       let chartData = {
-        datasets: [{
-          ...bigChartDatasetOptions,
-          data: bigChartData[index]
-        }],
+        datasets: [
+          {
+            ...bigChartDatasetOptions,
+            data: bigChartData[index]
+          }
+        ],
         labels: bigChartLabels
       };
       this.$refs.bigChart.updateGradients(chartData);
@@ -347,6 +360,7 @@ export default {
       this.i18n.locale = 'ar';
       this.$rtl.enableRTL();
     }
+
     this.initBigChart(0);
   },
   beforeDestroy() {
