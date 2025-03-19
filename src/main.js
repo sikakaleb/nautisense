@@ -1,13 +1,13 @@
 /*!
 
  =========================================================
- * Vue Black Dashboard PRO - v1.4.1
+ * Nautisense
  =========================================================
 
- * Product Page: https://www.creative-tim.com/product/vue-black-dashboard-pro
- * Copyright 2024 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://nautisense.chhilif.com/
+ * Copyright 2024 Nautisense (https://nautisense.chhilif.com/)
 
- * Coded by Creative Tim
+ * Coded by Nautisense
 
  =========================================================
 

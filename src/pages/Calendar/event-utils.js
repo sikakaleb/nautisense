@@ -54,14 +54,14 @@ export const INITIAL_EVENTS = [
     title: 'Click for Nautisense',
     start: new Date(y, m, 21),
     end: new Date(y, m, 22),
-    url: 'http://www.creative-tim.com/',
+    url: 'https://nautisense.chhilif.com/',
     className: 'event-orange'
   },
   {
     title: 'Click for Google',
     start: new Date(y, m, 21),
     end: new Date(y, m, 22),
-    url: 'http://www.creative-tim.com/',
+    url: 'https://nautisense.chhilif.com/',
     className: 'event-orange'
   }
 ];

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Carte Interactive avec Clustering et Effets</title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <!-- Mapbox GL CSS -->
+  <link
+    href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css"
+    rel="stylesheet"
+  />
+  <!-- Mapbox GL JS -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Un style de base pour le label de cluster */
+    .cluster-count {
+      color: white;
+      font-family: sans-serif;
+      font-size: 12px;
+      text-align: center;
+      line-height: 30px;
+      border: 2px solid white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+  /* =============================
+     1. Clé d'accès Mapbox
+     ============================= */
+  mapboxgl.accessToken = 'pk.eyJ1Ijoia2FsZWJzaWthMjAyNSIsImEiOiJjbThlZXhzN2owMHR2MmlzNWNxcHlqeDQ2In0.UvvmBCG_ANQnSkZ_vV-cmg';
+  
+  /* =============================
+     2. Initialisation de la carte
+     ============================= */
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v11',
+    center: [-50, 20],
+    zoom: 3
+  });
+
+  /* =============================
+     3. Génération de milliers de points (exemple aléatoire)
+     ============================= */
+  // Vous pouvez ici générer ou charger vos données réelles (API, fichier, etc.)
+  // Pour la démo, on génère 2000 points "navires/capteurs" avec des intensités
+  const generateRandomPoints = (count) => {
+    const features = [];
+    for (let i = 0; i < count; i++) {
+      // Position aléatoire (longitude entre -180 et 180, latitude entre -60 et 60)
+      const lon = -180 + 360 * Math.random();
+      const lat = -60 + 120 * Math.random();
+
+      // Ex. "intensity" 0 à 1, type "pollution"/"temp"/"normal"
+      const intensity = Math.random();
+      let type = 'normal';
+      if (intensity > 0.6) {
+        type = 'pollution';
+      } else if (intensity > 0.3) {
+        type = 'temp';
+      }
+
+      features.push({
+        type: 'Feature',
+        properties: {
+          title: `Point #${i}`,
+          description: `Type: ${type} - Intensity: ${intensity.toFixed(2)}`,
+          intensity: intensity,  // 0 à 1
+          pointType: type
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [lon, lat]
+        }
+      });
+    }
+    return {
+      type: 'FeatureCollection',
+      features
+    };
+  };
+
+  const geojsonData = generateRandomPoints(2000); // 2.000 points aléatoires
+
+  /* =============================
+     4. Ajout de la source avec clustering
+     ============================= */
+  map.on('load', () => {
+    map.addSource('my-points', {
+      type: 'geojson',
+      data: geojsonData,
+      cluster: true,          // Active le regroupement
+      clusterMaxZoom: 8,      // Zoom max pour regrouper
+      clusterRadius: 40       // Rayon en pixels pour le cluster
+    });
+
+    /* =============================
+       4.1. Layer : Cercle pour les points "non clusterisés"
+       ============================= */
+    map.addLayer({
+      id: 'unclustered-points',
+      type: 'circle',
+      source: 'my-points',
+      filter: ['!', ['has', 'point_count']], // Uniquement les points individuels
+      paint: {
+        /* Taille du cercle : dépend de l'intensité */
+        'circle-radius': [
+          'interpolate', ['linear'], ['get', 'intensity'],
+          0, 4,
+          1, 12
+        ],
+        /* Couleur : selon "pointType" */
+        'circle-color': [
+          'match',
+          ['get', 'pointType'],
+          'pollution', '#FF0000',  // rouge
+          'temp',      '#0000FF',  // bleu
+          '#00FF00'               // vert si "normal"
+        ],
+        'circle-opacity': 0.7,
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#fff'
+      }
+    });
+
+    /* =============================
+       4.2. Layer : Effet de "pulsation"/halo
+       ============================= 
+       Pour simuler un halo sur certains points "critiques" (ex: pollution > 0.8).
+       Utilise un second calque avec une opacité plus faible et un rayon plus grand.
+    */
+    map.addLayer({
+      id: 'unclustered-points-halo',
+      type: 'circle',
+      source: 'my-points',
+      filter: [
+        'all',
+        ['!', ['has', 'point_count']],
+        ['>', ['get', 'intensity'], 0.8] // On n'affiche ce halo QUE si intensité > 0.8
+      ],
+      paint: {
+        'circle-radius': [
+          'interpolate', ['linear'], ['zoom'],
+          0, 10,
+          15, 20
+        ],
+        'circle-color': '#ff0000',
+        'circle-opacity': 0.4
+      }
+    });
+
+    /* =============================
+       4.3. Layers : Clusters + Count
+       ============================= */
+    // a) Cercle de cluster
+    map.addLayer({
+      id: 'clusters',
+      type: 'circle',
+      source: 'my-points',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': '#51bbd6',
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20,  // Rayon si le cluster a < 10 points
+          10, 30,  // Si > 10 points => 30
+          50, 40   // Si > 50 points => 40
+        ]
+      }
+    });
+
+    // b) Nombre de points dans chaque cluster (label)
+    map.addLayer({
+      id: 'cluster-count',
+      type: 'symbol',
+      source: 'my-points',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+        'text-size': 12
+      },
+      paint: {
+        'text-color': '#ffffff'
+      }
+    });
+
+    /* =============================
+       5. Popup au clic sur un point unclustered
+       ============================= */
+    map.on('click', 'unclustered-points', (e) => {
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const props = e.features[0].properties;
+      const html = `<strong>${props.title}</strong><br>${props.description}`;
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(html)
+        .addTo(map);
+    });
+
+    /* =============================
+       6. Interaction avec cluster (zoom si on clique)
+       ============================= */
+    map.on('click', 'clusters', (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ['clusters']
+      });
+      const clusterId = features[0].properties.cluster_id;
+      map.getSource('my-points').getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) return;
+        map.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom: zoom
+        });
+      });
+    });
+
+    /* =============================
+       7. Changement du curseur au survol
+       ============================= */
+    map.on('mouseenter', 'unclustered-points', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'unclustered-points', () => {
+      map.getCanvas().style.cursor = '';
+    });
+    map.on('mouseenter', 'clusters', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'clusters', () => {
+      map.getCanvas().style.cursor = '';
+    });
+  });
+</script>
+</body>
+</html>

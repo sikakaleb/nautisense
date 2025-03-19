@@ -14,7 +14,7 @@
         </li>
         <li class="nav-item">
           <a
-            href="https://www.creative-tim.com/presentation"
+            href="https://nautisense.chhilif.com/"
             target="_blank"
             rel="noopener"
             class="nav-link"
@@ -36,7 +36,7 @@
       <div class="copyright">
         &copy; {{ year }}, made with <i class="tim-icons icon-heart-2"></i> by
         <a
-          href="https://www.creative-tim.com/?ref=vbdp-vuejs"
+          href="https://nautisense.chhilif.com/"
           target="_blank"
           rel="noopener"
           >Nautisense</a

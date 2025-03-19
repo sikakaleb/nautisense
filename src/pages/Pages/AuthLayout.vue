@@ -91,7 +91,7 @@
               &copy; {{ year }}, made with
               <i class="tim-icons icon-heart-2"></i> by
               <a
-                href="https://www.creative-tim.com/?ref=vbdp-vuejs"
+                href="https://nautisense.chhilif.com/"
                 target="_blank"
                 rel="noopener"
                 >Nautisense</a

@@ -192,7 +192,7 @@
                     <strong>1. Register</strong>
                     <p class="description">
                       The first step is to create an account at
-                      <a href="http://www.creative-tim.com/">Nautisense</a>.
+                      <a href="https://nautisense.chhilif.com/">Nautisense</a>.
                       You can choose a social network or go for the classic
                       version, whatever works best for you.
                     </p>
@@ -214,7 +214,7 @@
                     <strong>2. Apply</strong>
                     <p class="description">
                       The first step is to create an account at
-                      <a href="http://www.creative-tim.com/">Nautisense</a>.
+                      <a href="https://nautisense.chhilif.com/">Nautisense</a>.
                       You can choose a social network or go for the classic
                       version, whatever works best for you.
                     </p>
