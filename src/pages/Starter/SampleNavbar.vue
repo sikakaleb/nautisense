@@ -36,6 +36,8 @@
         </button>
         <!-- You can choose types of search input -->
       </div>
+
+      
       <modal
         :show.sync="searchModalVisible"
         class="modal-search"
@@ -52,6 +54,7 @@
           placeholder="SEARCH"
         />
       </modal>
+
       <base-dropdown
         tag="li"
         :menu-on-right="!$rtl.isRTL"
@@ -60,9 +63,7 @@
         title-classes="nav-link"
         menu-classes="dropdown-navbar"
       >
-        <template
-          slot="title"
-        >
+        <template slot="title">
           <div class="photo"><img src="img/mike.jpg" /></div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
           <p class="d-lg-none">Log out</p>
@@ -82,14 +83,14 @@
   </base-nav>
 </template>
 <script>
-import { BaseNav, Modal } from '@/components';
-import SidebarToggleButton from '../Layout/SidebarToggleButton';
+import { BaseNav, Modal } from "@/components";
+import SidebarToggleButton from "../Layout/SidebarToggleButton";
 
 export default {
   components: {
     SidebarToggleButton,
     BaseNav,
-    Modal
+    Modal,
   },
   computed: {
     routeName() {
@@ -98,14 +99,14 @@ export default {
     },
     isRTL() {
       return this.$rtl.isRTL;
-    }
+    },
   },
   data() {
     return {
       activeNotifications: false,
       showMenu: false,
       searchModalVisible: false,
-      searchQuery: ''
+      searchQuery: "",
     };
   },
   methods: {
@@ -126,8 +127,8 @@ export default {
     },
     toggleMenu() {
       this.showMenu = !this.showMenu;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

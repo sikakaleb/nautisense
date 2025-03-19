@@ -5,7 +5,7 @@
     <side-bar
       :background-color="sidebarBackground"
       short-title="CT"
-      title="Creative Tim"
+      title="Nautisense"
     >
       <template slot="links">
         <sidebar-item

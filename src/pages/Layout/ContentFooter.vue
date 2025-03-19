@@ -9,7 +9,7 @@
             rel="noopener"
             class="nav-link"
           >
-            Creative Tim
+            Nautisense
           </a>
         </li>
         <li class="nav-item">
@@ -39,7 +39,7 @@
           href="https://www.creative-tim.com/?ref=vbdp-vuejs"
           target="_blank"
           rel="noopener"
-          >Creative Tim</a
+          >Nautisense</a
         >
         for a better web.
       </div>
