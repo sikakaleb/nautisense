@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Carte Interactive avec Clustering, Effets et Légende</title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <!-- Mapbox GL CSS -->
+  <link
+    href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css"
+    rel="stylesheet"
+  />
+  <!-- Mapbox GL JS -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Exemple de style de la bulle de cluster (texte au centre) */
+    .cluster-count {
+      color: white;
+      font-family: sans-serif;
+      font-size: 12px;
+      text-align: center;
+      line-height: 30px;
+      border: 2px solid white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      background: #666;
+    }
+
+    /* Style optionnel pour la légende dans un Control */
+    .mapboxgl-ctrl.legend-control {
+      background: #fff;
+      padding: 10px 15px;
+      margin: 10px;
+      font-family: sans-serif;
+      font-size: 14px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+    .mapboxgl-ctrl.legend-control h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .mapboxgl-ctrl.legend-control .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .mapboxgl-ctrl.legend-control .legend-color {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script>
+  /* ================================
+     1) Accès Mapbox
+     ================================ */
+  mapboxgl.accessToken = 'pk.eyJ1Ijoia2FsZWJzaWthMjAyNSIsImEiOiJjbThlZXhzN2owMHR2MmlzNWNxcHlqeDQ2In0.UvvmBCG_ANQnSkZ_vV-cmg';
+
+  /* ================================
+     2) Initialisation de la carte
+     ================================ */
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v11',
+    center: [-50, 20], // coord. approx. de l'Atlantique
+    zoom: 3
+  });
+
+  /* ================================
+     3) Zones marines (bounding boxes) + Génération de points
+     ================================ */
+  const oceanBoxes = [
+    // [lonMin, latMin, lonMax, latMax]
+    [-80, 0, -20, 50],  // Atlantique Nord (approx)
+    [-160, 10, -120, 50] // Pacifique Nord (approx)
+  ];
+
+  function generatePointsInOceanBoxes(count) {
+    const features = [];
+    for (let i = 0; i < count; i++) {
+      // Choix d'une box aléatoire
+      const box = oceanBoxes[Math.floor(Math.random() * oceanBoxes.length)];
+      const randLon = box[0] + (box[2] - box[0]) * Math.random();
+      const randLat = box[1] + (box[3] - box[1]) * Math.random();
+
+      // Intensité et type
+      const intensity = Math.random(); // 0..1
+      let pointType = 'normal';
+      if (intensity > 0.6) {
+        pointType = 'pollution';
+      } else if (intensity > 0.3) {
+        pointType = 'temp';
+      }
+
+      features.push({
+        type: 'Feature',
+        properties: {
+          title: `Marine Point #${i}`,
+          description: `Type: ${pointType}, intensity: ${intensity.toFixed(2)}`,
+          intensity,
+          pointType
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [randLon, randLat]
+        }
+      });
+    }
+    return {
+      type: 'FeatureCollection',
+      features
+    };
+  }
+
+  const geojsonData = generatePointsInOceanBoxes(100);
+
+  /* ================================
+     4) Création de notre contrôle "LegendControl"
+     ================================ */
+  class LegendControl {
+    onAdd(mapInstance) {
+      this.map = mapInstance;
+      // On crée un container principal
+      this.container = document.createElement('div');
+      this.container.className = 'mapboxgl-ctrl legend-control';
+
+      // On insère du HTML pour la légende (texte + couleurs)
+      this.container.innerHTML = `
+        <h4>Légende</h4>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#FF0000;"></div>
+          <span>Pollution</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#0000FF;"></div>
+          <span>Température Anormale</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#00FF00;"></div>
+          <span>Normal</span>
+        </div>
+        <hr style="margin: 8px 0;" />
+        <div class="legend-item">
+          <div style="width:16px;height:16px;border:1px solid #51bbd6;border-radius:50%;margin-right:8px;"></div>
+          <span>Cluster / Regroupement</span>
+        </div>
+      `;
+      return this.container;
+    }
+
+    onRemove() {
+      this.container.parentNode.removeChild(this.container);
+      this.map = undefined;
+    }
+  }
+
+  /* ================================
+     5) Ajout de la source + calques
+     ================================ */
+  map.on('load', () => {
+    // Ajout de la source avec clustering
+    map.addSource('my-points', {
+      type: 'geojson',
+      data: geojsonData,
+      cluster: true,
+      clusterMaxZoom: 8,
+      clusterRadius: 40
+    });
+
+    // a) Points non clusterisés
+    map.addLayer({
+      id: 'unclustered-points',
+      type: 'circle',
+      source: 'my-points',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-radius': [
+          'interpolate', ['linear'], ['get', 'intensity'],
+          0, 4,
+          1, 12
+        ],
+        'circle-color': [
+          'match',
+          ['get', 'pointType'],
+          'pollution', '#FF0000',
+          'temp',      '#0000FF',
+                       '#00FF00'
+        ],
+        'circle-opacity': 0.7,
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#fff'
+      }
+    });
+
+    // b) Halo/pulsation pour intensité > 0.8
+    map.addLayer({
+      id: 'unclustered-points-halo',
+      type: 'circle',
+      source: 'my-points',
+      filter: [
+        'all',
+        ['!', ['has', 'point_count']],
+        ['>', ['get', 'intensity'], 0.8]
+      ],
+      paint: {
+        'circle-radius': [
+          'interpolate', ['linear'], ['zoom'],
+          0, 10,
+          15, 20
+        ],
+        'circle-color': '#ff0000',
+        'circle-opacity': 0.4
+      }
+    });
+
+    // c) Cercle de cluster
+    map.addLayer({
+      id: 'clusters',
+      type: 'circle',
+      source: 'my-points',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': '#51bbd6',
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20, 10, 30, 50, 40
+        ]
+      }
+    });
+
+    // d) Nombre de points clusterisés
+    map.addLayer({
+      id: 'cluster-count',
+      type: 'symbol',
+      source: 'my-points',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+        'text-size': 12
+      },
+      paint: {
+        'text-color': '#ffffff'
+      }
+    });
+
+    // Popup au clic sur un point
+    map.on('click', 'unclustered-points', (e) => {
+      const coords = e.features[0].geometry.coordinates.slice();
+      const props = e.features[0].properties;
+      const html = `<strong>${props.title}</strong><br>${props.description}`;
+
+      new mapboxgl.Popup()
+        .setLngLat(coords)
+        .setHTML(html)
+        .addTo(map);
+    });
+
+    // Zoom sur le cluster
+    map.on('click', 'clusters', (e) => {
+      const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+      const clusterId = features[0].properties.cluster_id;
+      map.getSource('my-points').getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) return;
+        map.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom
+        });
+      });
+    });
+
+    // Changement de curseur au survol
+    map.on('mouseenter', 'unclustered-points', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'unclustered-points', () => {
+      map.getCanvas().style.cursor = '';
+    });
+    map.on('mouseenter', 'clusters', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'clusters', () => {
+      map.getCanvas().style.cursor = '';
+    });
+
+    /* ================================
+       6) Ajout du contrôle Légende
+          Positionné en top-right
+       ================================ */
+    const legendControl = new LegendControl();
+    map.addControl(legendControl, 'top-right');
+  });
+</script>
+</body>
+</html>
