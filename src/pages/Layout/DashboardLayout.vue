@@ -4,7 +4,7 @@
     <side-bar
       :background-color="sidebarBackground"
       :short-title="$t('sidebar.shortTitle')"
-      :title="$t('sidebar.title')"
+      :title="Nautisense"
     >
       <template slot="links">
         <sidebar-item
@@ -101,7 +101,7 @@ export default {
   },
   data() {
     return {
-      sidebarBackground: "vue", //vue|blue|orange|green|red|primary
+      sidebarBackground: "blue", //vue|blue|orange|green|red|primary
     };
   },
   methods: {

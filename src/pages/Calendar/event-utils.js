@@ -51,7 +51,7 @@ export const INITIAL_EVENTS = [
     className: 'event-azure'
   },
   {
-    title: 'Click for Creative Tim',
+    title: 'Click for Nautisense',
     start: new Date(y, m, 21),
     end: new Date(y, m, 22),
     url: 'http://www.creative-tim.com/',
