@@ -1,14 +1,22 @@
 <template>
+  <!-- On réutilise <base-table> et la mise en page "title / description" -->
   <base-table :data="tableData" thead-classes="text-primary">
     <template slot-scope="{ row }">
-      <td><base-checkbox v-model="row.done"></base-checkbox></td>
+      <!-- Checkbox pour marquer l’alerte comme “traitée” ou “résolue” -->
+      <td>
+        <base-checkbox v-model="row.done"></base-checkbox>
+      </td>
+
+      <!-- Informations principales de l’alerte -->
       <td>
         <p class="title">{{ row.title }}</p>
         <p class="text-muted">{{ row.description }}</p>
       </td>
+
+      <!-- Icône d’action (Edition ou détail) -->
       <td class="td-actions text-right">
         <el-tooltip
-          content="Edit task"
+          content="Voir / Éditer l'alerte"
           effect="light"
           :open-delay="300"
           placement="top"
@@ -21,47 +29,53 @@
     </template>
   </base-table>
 </template>
+
 <script>
-import { BaseTable } from '@/components';
+import { BaseTable, BaseCheckbox, BaseButton } from '@/components';
 
 export default {
+  name: 'TaskList', // Vous pouvez renommer en "AlertList" si souhaité
   components: {
-    BaseTable
+    BaseTable,
+    BaseCheckbox,
+    BaseButton
   },
   data() {
     return {
+      /* Exemple de données d’alertes sur les capteurs
+         (à adapter selon votre logique métier ou en flux temps réel) */
       tableData: [
         {
-          title: 'Update the Documentation',
-          description: 'Dwuamish Head, Seattle, WA 8:47 AM',
+          title: 'Température anormale détectée',
+          description: 'Capteur #1 - Lecture à 29°C (seuil max 25°C).',
           done: false
         },
         {
-          title: 'GDPR Compliance',
+          title: 'Niveau de CO₂ trop élevé',
+          description: 'Capteur CO₂ (#3) - Taux détecté : 410 ppm.',
+          done: false
+        },
+        {
+          title: 'Maintenance requise sur capteur de pH',
           description:
-            'The GDPR is a regulation that requires businesses to protect the personal data and privacy of Europe citizens for transactions that occur within EU member states.',
+            'Dernière calibration remontant à plus de 72h, pH capteur #5.',
           done: true
         },
         {
-          title: 'Solve the issues',
+          title: 'Rejet anormal d’hydrocarbures',
           description:
-            'Fifty percent of all respondents said they would be more likely to shop at a company',
+            'Échantillon #4 - Valeur au-dessus du seuil: 2.5 mg/L (limite : 1 mg/L).',
           done: false
         },
         {
-          title: 'Release v2.0.0',
-          description: 'Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM',
+          title: 'Capteur de salinité hors-ligne',
+          description: 'Capteur #7 - Aucun signal depuis 20 minutes.',
           done: false
         },
         {
-          title: 'Export the processed files',
+          title: 'Sonar - valeur hors plage attendue',
           description:
-            'The report also shows that consumers will not easily forgive a company once a breach exposing their personal data occurs.',
-          done: false
-        },
-        {
-          title: 'Arival at export process',
-          description: 'Capitol Hill, Seattle, WA 12:34 AM',
+            'Sonar #2 - Écho inhabituel détecté à 12:34 (coordonnées X:Y).',
           done: false
         }
       ]
@@ -69,4 +83,13 @@ export default {
   }
 };
 </script>
-<style></style>
+
+
+<style scoped>
+.title {
+  font-weight: bold;
+}
+.text-muted {
+  font-size: 0.9rem;
+}
+</style>

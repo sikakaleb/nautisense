@@ -1,8 +1,9 @@
 <template>
   <div class="row">
+    <!-- 1) Grande courbe : Variation de la température de l’eau -->
     <div class="col-12">
       <card type="chart">
-        <template slot="header">
+        <template #header>
           <div class="row">
             <div class="col-sm-6" :class="isRTL ? 'text-right' : 'text-left'">
               <h5 class="card-category">Water Temperature (°C)</h5>
@@ -45,13 +46,10 @@
             :gradient-colors="bigLineChart.gradientColors"
             :gradient-stops="bigLineChart.gradientStops"
             :extra-options="bigLineChart.extraOptions"
-          >
-          </line-chart>
+          />
         </div>
       </card>
     </div>
-
-    <!-- Stats Cards (exemple d'indicateurs clés) -->
     <div
       class="col-lg-3 col-md-6"
       v-for="card in statsCards"
@@ -66,14 +64,13 @@
         <div slot="footer" v-html="card.footer"></div>
       </stats-card>
     </div>
-
-    <!-- Small charts (3 colonnes) -->
     <div class="col-lg-4" :class="{ 'text-right': isRTL }">
       <card type="chart">
-        <template slot="header">
+        <template #header>
           <h5 class="card-category">CO₂ Emissions</h5>
           <h3 class="card-title">
-            <i class="tim-icons icon-bell-55 text-primary"></i> 763,215 µg/m³
+            <i class="tim-icons icon-bell-55 text-primary"></i>
+            763,215 µg/m³
           </h3>
         </template>
         <div class="chart-area">
@@ -83,15 +80,13 @@
             :gradient-colors="purpleLineChart.gradientColors"
             :gradient-stops="purpleLineChart.gradientStops"
             :extra-options="purpleLineChart.extraOptions"
-          >
-          </line-chart>
+          />
         </div>
       </card>
     </div>
-
     <div class="col-lg-4" :class="{ 'text-right': isRTL }">
       <card type="chart">
-        <template slot="header">
+        <template #header>
           <h5 class="card-category">Salinity</h5>
           <h3 class="card-title">
             <i class="tim-icons icon-delivery-fast text-info"></i> 35 PSU
@@ -103,15 +98,13 @@
             :chart-data="blueBarChart.chartData"
             :gradient-stops="blueBarChart.gradientStops"
             :extra-options="blueBarChart.extraOptions"
-          >
-          </bar-chart>
+          />
         </div>
       </card>
     </div>
-
     <div class="col-lg-4" :class="{ 'text-right': isRTL }">
       <card type="chart">
-        <template slot="header">
+        <template #header>
           <h5 class="card-category">Water pH</h5>
           <h3 class="card-title">
             <i class="tim-icons icon-send text-success"></i> pH = 8.1
@@ -123,17 +116,67 @@
             :chart-data="greenLineChart.chartData"
             :gradient-stops="greenLineChart.gradientStops"
             :extra-options="greenLineChart.extraOptions"
-          >
-          </line-chart>
+          />
         </div>
       </card>
     </div>
-
-    <!-- "Tasks" (renommé ou conservé) -->
+    <div class="col-lg-4 mt-4" :class="{ 'text-right': isRTL }">
+      <card type="chart">
+        <template #header>
+          <h5 class="card-category">Dissolved O₂</h5>
+          <h3 class="card-title">
+            <i class="tim-icons icon-zoom-split text-info"></i>
+            6.5 mg/L
+          </h3>
+        </template>
+        <div class="chart-area">
+          <line-chart
+            :chart-data="oxygenLineChart.chartData"
+            :extra-options="oxygenLineChart.extraOptions"
+            style="height: 100%"
+          />
+        </div>
+      </card>
+    </div>
+    <div class="col-lg-4 mt-4" :class="{ 'text-right': isRTL }">
+      <card type="chart">
+        <template #header>
+          <h5 class="card-category">Turbidity</h5>
+          <h3 class="card-title">
+            <i class="tim-icons icon-ruler-pencil text-warning"></i>
+            ~12 NTU
+          </h3>
+        </template>
+        <div class="chart-area">
+          <bar-chart
+            :chart-data="turbidityChart.chartData"
+            :extra-options="turbidityChart.extraOptions"
+            style="height: 100%"
+          />
+        </div>
+      </card>
+    </div>
+    <div class="col-lg-4 mt-4" :class="{ 'text-right': isRTL }">
+      <card type="chart">
+        <template #header>
+          <h5 class="card-category">Microplastics</h5>
+          <h3 class="card-title">
+            <i class="tim-icons icon-molecule-40 text-danger"></i>
+            15 particles/L
+          </h3>
+        </template>
+        <div class="chart-area">
+          <line-chart
+            :chart-data="microplasticsChart.chartData"
+            :extra-options="microplasticsChart.extraOptions"
+            style="height: 100%"
+          />
+        </div>
+      </card>
+    </div>
     <div class="col-lg-5">
       <card type="tasks" :header-classes="{ 'text-right': isRTL }">
-        <template slot="header">
-          <!-- Par exemple, on peut renommer Tasks en Alerts -->
+        <template #header>
           <h6 class="title d-inline">Alerts (5)</h6>
           <p class="card-category d-inline">Today</p>
           <base-dropdown
@@ -143,9 +186,9 @@
             :class="{ 'float-left': isRTL }"
           >
             <i slot="title" class="tim-icons icon-settings-gear-63"></i>
-            <a class="dropdown-item" href="#pablo"> Action </a>
-            <a class="dropdown-item" href="#pablo"> Another action </a>
-            <a class="dropdown-item" href="#pablo"> Something else </a>
+            <a class="dropdown-item" href="#pablo">Action</a>
+            <a class="dropdown-item" href="#pablo">Another action</a>
+            <a class="dropdown-item" href="#pablo">Something else</a>
           </base-dropdown>
         </template>
         <div class="table-full-width table-responsive">
@@ -153,8 +196,6 @@
         </div>
       </card>
     </div>
-
-    <!-- Tableau de management (exemple : table capteurs) -->
     <div class="col-lg-7">
       <card class="card" :header-classes="{ 'text-right': isRTL }">
         <h5 slot="header" class="card-title">Sensors Table</h5>
@@ -163,8 +204,6 @@
         </div>
       </card>
     </div>
-
-    <!-- Carte (par exemple, on garde le composant existant) -->
     <div class="col-lg-12">
       <country-map-card></country-map-card>
     </div>
@@ -182,9 +221,10 @@ import StatsCard from 'src/components/Cards/StatsCard';
 import config from '@/config';
 
 let bigChartData = [
-  [15, 17, 19, 20, 22, 25, 24, 22, 21, 20, 18, 16],
-  [14, 15, 16, 17, 18, 19, 19, 18, 18, 17, 16, 15], 
-  [10, 10, 11, 12, 12, 13, 14, 13, 12, 11, 10, 10]  
+  // Variation de temp. eau en surface / moyenne / profondeur, par mois
+  [15, 17, 19, 20, 22, 25, 24, 22, 21, 20, 18, 16],  // Surface
+  [14, 15, 16, 17, 18, 19, 19, 18, 18, 17, 16, 15],  // Mid-depth
+  [10, 10, 11, 12, 12, 13, 14, 13, 12, 11, 10, 10]   // Deep
 ];
 let bigChartLabels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
@@ -192,8 +232,6 @@ let bigChartDatasetOptions = {
   fill: true,
   borderColor: config.colors.primary,
   borderWidth: 2,
-  borderDash: [],
-  borderDashOffset: 0.0,
   pointBackgroundColor: config.colors.primary,
   pointBorderColor: 'rgba(255,255,255,0)',
   pointHoverBackgroundColor: config.colors.primary,
@@ -214,36 +252,69 @@ export default {
   },
   data() {
     return {
+      // 1) Cartes de stats rapides
       statsCards: [
-        {
-          title: '24°C',
-          subTitle: 'Temp. Eau',
-          type: 'warning',
-          icon: 'tim-icons icon-chat-33',
-          footer: '<i class="tim-icons icon-refresh-01"></i> Update Now'
-        },
-        {
-          title: '45 µg/m³',
-          subTitle: 'Pollution',
-          type: 'primary',
-          icon: 'tim-icons icon-shape-star',
-          footer: '<i class="tim-icons icon-sound-wave"></i> Last Research'
-        },
-        {
-          title: '15 nœuds',
-          subTitle: 'Vitesse',
-          type: 'info',
-          icon: 'tim-icons icon-single-02',
-          footer: '<i class="tim-icons icon-trophy"></i> Sensor feedback'
-        },
-        {
-          title: '8/10',
-          subTitle: 'Qualité',
-          type: 'danger',
-          icon: 'tim-icons icon-molecule-40',
-          footer: '<i class="tim-icons icon-watch-time"></i> In the last hours'
-        }
-      ],
+      // Ligne 1
+      {
+        title: '24°C',
+        subTitle: 'Water Temp',
+        type: 'warning',
+        icon: 'tim-icons icon-chat-33',
+        footer: '<i class="tim-icons icon-refresh-01"></i> Updated now'
+      },
+      {
+        title: '45 µg/m³',
+        subTitle: 'Pollution',
+        type: 'primary',
+        icon: 'tim-icons icon-shape-star',
+        footer: '<i class="tim-icons icon-sound-wave"></i> Last Research'
+      },
+      {
+        title: '15 knots',
+        subTitle: 'Vessel Speed',
+        type: 'info',
+        icon: 'tim-icons icon-single-02',
+        footer: '<i class="tim-icons icon-trophy"></i> Sensor feedback'
+      },
+      {
+        title: '8/10',
+        subTitle: 'Water Quality',
+        type: 'danger',
+        icon: 'tim-icons icon-molecule-40',
+        footer: '<i class="tim-icons icon-watch-time"></i> In the last hours'
+      },
+
+      {
+        title: 'Nutrients',
+        subTitle: 'Nitrates ~ 4 µmol/L',
+        icon: 'tim-icons icon-tap-02',
+        type: 'info',
+        footer: '<i class="tim-icons icon-refresh-01"></i> updated 2h ago'
+      },
+      {
+        title: 'Sea Level',
+        subTitle: '+3 mm/an',
+        icon: 'tim-icons icon-world',
+        type: 'warning',
+        footer: '<i class="tim-icons icon-watch-time"></i> global average'
+      },
+      {
+        title: 'Chem. Pollu',
+        subTitle: 'Hg < 1 µg/L',
+        icon: 'tim-icons icon-alert-circle-exc',
+        type: 'danger',
+        footer: '<i class="tim-icons icon-settings-gear-63"></i> last analysis'
+      },
+      {
+        title: 'Solar Rad',
+        subTitle: '~ 2.5 W/m²',
+        icon: 'tim-icons icon-sun-cloud',
+        type: 'primary',
+        footer: '<i class="tim-icons icon-sound-wave"></i> for reef areas'
+      }
+    ],
+
+      // 2) Grand graphique : Variation de T° en surface, mi-profondeur, profonde
       bigLineChart: {
         activeIndex: 0,
         chartData: {
@@ -259,6 +330,8 @@ export default {
         gradientColors: config.colors.primaryGradient,
         gradientStops: [1, 0.4, 0]
       },
+
+      // 3) Petits graphiques existants
       purpleLineChart: {
         extraOptions: chartConfigs.purpleChartOptions,
         chartData: {
@@ -318,17 +391,61 @@ export default {
         },
         gradientColors: config.colors.primaryGradient,
         gradientStops: [1, 0.4, 0]
+      },
+
+      // 4) Nouveaux petits graphiques : O₂, Turbidity, Microplastics
+      oxygenLineChart: {
+        extraOptions: chartConfigs.lineChartOptionsBlue,
+        chartData: {
+          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV'],
+          datasets: [
+            {
+              label: 'Dissolved O₂ (mg/L)',
+              borderColor: config.colors.info,
+              fill: false,
+              data: [6, 6.5, 6.8, 6.2, 6.4]
+            }
+          ]
+        }
+      },
+      turbidityChart: {
+        extraOptions: chartConfigs.barChartOptions,
+        chartData: {
+          labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY'],
+          datasets: [
+            {
+              label: 'NTU',
+              backgroundColor: config.colors.warning,
+              data: [10, 12, 9, 15, 13]
+            }
+          ]
+        }
+      },
+      microplasticsChart: {
+        extraOptions: chartConfigs.lineChartOptionsBlue,
+        chartData: {
+          labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+          datasets: [
+            {
+              label: 'Particles/L',
+              borderColor: config.colors.danger,
+              fill: false,
+              data: [12, 15, 13, 18]
+            }
+          ]
+        }
       }
     };
   },
   computed: {
+    // RTL Handling (si besoin)
     enableRTL() {
       return this.$route.query.enableRTL;
     },
     isRTL() {
       return this.$rtl.isRTL;
     },
-
+    // Boutons d'options pour le grand graphique (Surface, Mid-depth, Deep water)
     bigLineChartCategories() {
       return [
         { name: 'Surface', icon: 'tim-icons icon-single-02' },
@@ -338,7 +455,7 @@ export default {
     }
   },
   methods: {
-
+    // Mise à jour du grand graphique de température en fonction de l'index
     initBigChart(index) {
       let chartData = {
         datasets: [
@@ -349,21 +466,24 @@ export default {
         ],
         labels: bigChartLabels
       };
+      // Met à jour le gradient sur le chart
       this.$refs.bigChart.updateGradients(chartData);
       this.bigLineChart.chartData = chartData;
       this.bigLineChart.activeIndex = index;
     }
   },
   mounted() {
+    // Gestion éventuelle de la langue ou du RTL
     this.i18n = this.$i18n;
     if (this.enableRTL) {
       this.i18n.locale = 'ar';
       this.$rtl.enableRTL();
     }
-
+    // Initialise le grand graphique sur l'index 0
     this.initBigChart(0);
   },
   beforeDestroy() {
+    // On repasse en mode LTR si on s'en va
     if (this.$rtl.isRTL) {
       this.i18n.locale = 'en';
       this.$rtl.disableRTL();
@@ -371,4 +491,13 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* Vous pouvez ajouter des ajustements de style ici si nécessaire */
+
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+</style>
+
 <style></style>
