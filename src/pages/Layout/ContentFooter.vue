@@ -24,7 +24,7 @@
         </li>
         <li class="nav-item">
           <a
-            href="http://blog.creative-tim.com"
+            href="https://nautisense.chhilif.com/"
             target="_blank"
             rel="noopener"
             class="nav-link"
