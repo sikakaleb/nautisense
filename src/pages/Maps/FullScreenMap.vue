@@ -1,301 +1,150 @@
 <template>
-  <div id="map" class="full-screen-map"></div>
+  <div>
+    <div id="map" class="full-screen-map"></div>
+    <div class="legend-control">
+      <h4>Légende</h4>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color:#FF0000;"></div>
+        <span>Pollution</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color:#0000FF;"></div>
+        <span>Température Anormale</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color:#00FF00;"></div>
+        <span>Normal</span>
+      </div>
+      <hr style="margin: 8px 0;" />
+      <div class="legend-item">
+        <div style="width:16px;height:16px;border:1px solid #51bbd6;border-radius:50%;margin-right:8px;"></div>
+        <span>Cluster / Regroupement</span>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
-import { API_KEY } from "./API_KEY";
-import { Loader, LoaderOptions } from "google-maps";
-
-const loader = new Loader(API_KEY);
-
 export default {
-  data() {
-    return {
-      nav: null
-    };
-  },
   mounted() {
-    let nav = document.getElementsByTagName('nav');
-    if (nav.length > 0) {
-      this.nav = nav[0];
+    mapboxgl.accessToken = 'pk.eyJ1Ijoia2FsZWJzaWthMjAyNSIsImEiOiJjbThlZXhzN2owMHR2MmlzNWNxcHlqeDQ2In0.UvvmBCG_ANQnSkZ_vV-cmg';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-50, 20],
+      zoom: 3
+    });
+
+    function generatePoints(count) {
+      const features = [];
+      for (let i = 0; i < count; i++) {
+        const lon = -80 + Math.random() * 60;
+        const lat = 0 + Math.random() * 50;
+        const intensity = Math.random();
+        const pointType = intensity > 0.6 ? 'pollution' : intensity > 0.3 ? 'temp' : 'normal';
+
+        features.push({
+          type: 'Feature',
+          properties: { title: `Point ${i}`, pointType },
+          geometry: { type: 'Point', coordinates: [lon, lat] }
+        });
+      }
+      return { type: 'FeatureCollection', features };
     }
-    this.nav.classList.add('fixed-top');
-    this.nav.classList.remove('navbar-transparent');
-    loader.load().then(function(google) {
 
-      // Regular Map
-      const myLatlng = new google.maps.LatLng(40.748817, -73.985428);
-      const mapOptions = {
-        zoom: 13,
-        center: myLatlng,
-        scrollwheel: false, // we disable de scroll over the map, it is a really annoing when you scroll through page
-        disableDefaultUI: true, // a way to quickly hide all controls
-        zoomControl: true,
-        styles: [
-          {
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#1d2c4d'
-              }
-            ]
-          },
-          {
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#8ec3b9'
-              }
-            ]
-          },
-          {
-            elementType: 'labels.text.stroke',
-            stylers: [
-              {
-                color: '#1a3646'
-              }
-            ]
-          },
-          {
-            featureType: 'administrative.country',
-            elementType: 'geometry.stroke',
-            stylers: [
-              {
-                color: '#4b6878'
-              }
-            ]
-          },
-          {
-            featureType: 'administrative.land_parcel',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#64779e'
-              }
-            ]
-          },
-          {
-            featureType: 'administrative.province',
-            elementType: 'geometry.stroke',
-            stylers: [
-              {
-                color: '#4b6878'
-              }
-            ]
-          },
-          {
-            featureType: 'landscape.man_made',
-            elementType: 'geometry.stroke',
-            stylers: [
-              {
-                color: '#334e87'
-              }
-            ]
-          },
-          {
-            featureType: 'landscape.natural',
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#023e58'
-              }
-            ]
-          },
-          {
-            featureType: 'poi',
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#283d6a'
-              }
-            ]
-          },
-          {
-            featureType: 'poi',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#6f9ba5'
-              }
-            ]
-          },
-          {
-            featureType: 'poi',
-            elementType: 'labels.text.stroke',
-            stylers: [
-              {
-                color: '#1d2c4d'
-              }
-            ]
-          },
-          {
-            featureType: 'poi.park',
-            elementType: 'geometry.fill',
-            stylers: [
-              {
-                color: '#023e58'
-              }
-            ]
-          },
-          {
-            featureType: 'poi.park',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#3C7680'
-              }
-            ]
-          },
-          {
-            featureType: 'road',
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#304a7d'
-              }
-            ]
-          },
-          {
-            featureType: 'road',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#98a5be'
-              }
-            ]
-          },
-          {
-            featureType: 'road',
-            elementType: 'labels.text.stroke',
-            stylers: [
-              {
-                color: '#1d2c4d'
-              }
-            ]
-          },
-          {
-            featureType: 'road.highway',
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#2c6675'
-              }
-            ]
-          },
-          {
-            featureType: 'road.highway',
-            elementType: 'geometry.fill',
-            stylers: [
-              {
-                color: '#9d2a80'
-              }
-            ]
-          },
-          {
-            featureType: 'road.highway',
-            elementType: 'geometry.stroke',
-            stylers: [
-              {
-                color: '#9d2a80'
-              }
-            ]
-          },
-          {
-            featureType: 'road.highway',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#b0d5ce'
-              }
-            ]
-          },
-          {
-            featureType: 'road.highway',
-            elementType: 'labels.text.stroke',
-            stylers: [
-              {
-                color: '#023e58'
-              }
-            ]
-          },
-          {
-            featureType: 'transit',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#98a5be'
-              }
-            ]
-          },
-          {
-            featureType: 'transit',
-            elementType: 'labels.text.stroke',
-            stylers: [
-              {
-                color: '#1d2c4d'
-              }
-            ]
-          },
-          {
-            featureType: 'transit.line',
-            elementType: 'geometry.fill',
-            stylers: [
-              {
-                color: '#283d6a'
-              }
-            ]
-          },
-          {
-            featureType: 'transit.station',
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#3a4762'
-              }
-            ]
-          },
-          {
-            featureType: 'water',
-            elementType: 'geometry',
-            stylers: [
-              {
-                color: '#0e1626'
-              }
-            ]
-          },
-          {
-            featureType: 'water',
-            elementType: 'labels.text.fill',
-            stylers: [
-              {
-                color: '#4e6d70'
-              }
-            ]
-          }
-        ]
-      };
+    const geojsonData = generatePoints(100);
 
-      const map = new google.maps.Map(
-        document.getElementById("map"),
-        mapOptions
-      );
-
-      const marker = new google.maps.Marker({
-        position: myLatlng,
-        title: "Regular Map!"
+    map.on('load', () => {
+      map.addSource('points', {
+        type: 'geojson',
+        data: geojsonData,
+        cluster: true,
+        clusterRadius: 50
       });
 
-      marker.setMap(map);
+      map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'points',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#51bbd6',
+          'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
+        }
+      });
+
+      map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'points',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12
+        },
+        paint: {
+          'text-color': '#fff'
+        }
+      });
+
+      map.addLayer({
+        id: 'unclustered-point',
+        type: 'circle',
+        source: 'points',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': [
+            'match',
+            ['get', 'pointType'],
+            'pollution', '#FF0000',
+            'temp', '#0000FF',
+            '#00FF00'
+          ],
+          'circle-radius': 8
+        }
+      });
     });
   },
-  beforeDestroy() {
-    this.nav.classList.add('navbar-transparent');
-    this.nav.classList.remove('bg-white');
-    this.nav.classList.remove('fixed-top');
+  methods: {
+    goToDashboard() {
+      this.$router.push('/dashboard');
+    }
   }
 };
 </script>
 <style>
 #map {
   height: 100vh;
+}
+
+.dashboard-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.legend-control {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+}
+.legend-color {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border-radius: 2px;
 }
 </style>

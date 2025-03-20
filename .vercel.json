@@ -11,5 +11,15 @@
   "alias": [
     { "domain": "nautisense.vercel.app", "deployment": "production" },
     { "domain": "preview.nautisense.vercel.app", "deployment": "preview" }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "redirects": [
+    {
+      "source": "/preview/(.*)",
+      "destination": "https://nautisense.vercel.app/$1",
+      "permanent": false
+    }
   ]
 }

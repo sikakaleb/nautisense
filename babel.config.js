@@ -1,6 +1,7 @@
 module.exports = {
   "presets": [
-    "@vue/app"
+    "@vue/app",
+    "@babel/preset-env"
   ],
   "plugins": [
     [
@@ -8,6 +9,12 @@ module.exports = {
       {
         "libraryName": "element-ui",
         "styleLibraryName": "theme-chalk"
+      }
+    ],
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "useESModules": true
       }
     ]
   ]
