@@ -23,6 +23,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   mounted() {
@@ -44,7 +45,11 @@ export default {
 
         features.push({
           type: 'Feature',
-          properties: { title: `Point ${i}`, pointType },
+          properties: { 
+            title: `Point ${i}`, 
+            pointType,
+            description: `Type: ${pointType}, Intensité: ${(intensity * 100).toFixed(1)}%` 
+          },
           geometry: { type: 'Point', coordinates: [lon, lat] }
         });
       }
@@ -61,6 +66,7 @@ export default {
         clusterRadius: 50
       });
 
+      // Clusters
       map.addLayer({
         id: 'clusters',
         type: 'circle',
@@ -72,6 +78,7 @@ export default {
         }
       });
 
+      // Cluster Count
       map.addLayer({
         id: 'cluster-count',
         type: 'symbol',
@@ -86,6 +93,7 @@ export default {
         }
       });
 
+      // Unclustered Points
       map.addLayer({
         id: 'unclustered-point',
         type: 'circle',
@@ -102,31 +110,58 @@ export default {
           'circle-radius': 8
         }
       });
+
+      // 📌 Popups pour les points non clusterisés
+      map.on('click', 'unclustered-point', (e) => {
+        const features = e.features[0];
+        const coords = features.geometry.coordinates.slice();
+        const { title, description } = features.properties;
+
+        new mapboxgl.Popup()
+          .setLngLat(coords)
+          .setHTML(`<strong>${title}</strong><br>${description}`)
+          .addTo(map);
+      });
+
+      // Curseur en mode pointer sur les points non clusterisés
+      map.on('mouseenter', 'unclustered-point', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'unclustered-point', () => {
+        map.getCanvas().style.cursor = '';
+      });
+
+      // Zoom sur cluster au clic
+      map.on('click', 'clusters', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        const clusterId = features[0].properties.cluster_id;
+        map.getSource('points').getClusterExpansionZoom(clusterId, (err, zoom) => {
+          if (err) return;
+          map.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom: zoom
+          });
+        });
+      });
+
+      map.on('mouseenter', 'clusters', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      
+      map.on('mouseleave', 'clusters', () => {
+        map.getCanvas().style.cursor = '';
+      });
     });
-  },
-  methods: {
-    goToDashboard() {
-      this.$router.push('/dashboard');
-    }
   }
 };
 </script>
+
 <style>
 #map {
   height: 100vh;
 }
 
-.dashboard-btn {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 .legend-control {
   position: absolute;
   bottom: 20px;
@@ -136,11 +171,13 @@ export default {
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
+
 .legend-item {
   display: flex;
   align-items: center;
   margin: 4px 0;
 }
+
 .legend-color {
   width: 16px;
   height: 16px;
