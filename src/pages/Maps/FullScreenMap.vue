@@ -123,6 +123,12 @@ export default {
           .addTo(map);
       });
 
+      // 🔥 Double-clic pour rediriger vers `/dashboard`
+      map.on('dblclick', 'unclustered-point', (e) => {
+        e.preventDefault();
+        this.goToDashboard();
+      });
+
       // Curseur en mode pointer sur les points non clusterisés
       map.on('mouseenter', 'unclustered-point', () => {
         map.getCanvas().style.cursor = 'pointer';
@@ -153,6 +159,11 @@ export default {
         map.getCanvas().style.cursor = '';
       });
     });
+  },
+  methods: {
+    goToDashboard() {
+      this.$router.push('/dashboard');
+    }
   }
 };
 </script>
