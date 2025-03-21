@@ -18,7 +18,7 @@ import VueRouter from "vue-router";
 import RouterPrefetch from "vue-router-prefetch";
 import DashboardPlugin from "./plugins/dashboard-plugin";
 import App from "./App.vue";
-
+import { SpeedInsights } from "@vercel/speed-insights/vue"
 // router setup
 import router from "./routes/router";
 import i18n from "./i18n";
