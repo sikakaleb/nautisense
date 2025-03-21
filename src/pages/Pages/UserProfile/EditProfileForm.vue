@@ -26,7 +26,7 @@
           <base-input
             type="email"
             label="Email address"
-            placeholder="mike@email.com"
+            placeholder="mail@email.com"
             v-model="user.email"
           >
           </base-input>
@@ -119,16 +119,16 @@ export default {
   data() {
     return {
       user: {
-        company: 'Creative Code Inc.',
-        username: 'michael23',
+        company: 'Nautisense',
+        username: 'NautisenseCeo6385',
         email: '',
-        firstName: 'Mike',
-        lastName: 'Andrew',
-        address: 'Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09',
-        city: 'New York',
-        country: 'USA',
-        postalCode: '',
-        aboutMe: `Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.`
+        firstName: 'Philomene',
+        lastName: 'Rhodet',
+        address: 'Campus Sophia Tech 930 rte Colles, 06410 Biot France',
+        city: 'Biot',
+        country: 'France',
+        postalCode: '06410',
+        aboutMe: `Exploring the crossroads of technology and creativity. Driven by passion, guided by purpose, and constantly evolving to turn ideas into impactful realities.`
       }
     };
   },
