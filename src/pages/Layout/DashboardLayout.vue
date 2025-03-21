@@ -16,21 +16,12 @@
         >
         </sidebar-item>
         <sidebar-item
-          :link="{ name: $t('sidebar.pages'), icon: 'tim-icons icon-bullet-list-67' }"
+          :link="{ name: $t('sidebar.pages'), icon: 'tim-icons icon-settings', path: '/pages/user' }"
         >
-          <sidebar-item
-            :link="{ name: $t('sidebar.userProfile'), path: '/pages/user' }"
-          ></sidebar-item>
         </sidebar-item>
         <sidebar-item
-          :link="{ name: $t('sidebar.maps'), icon: 'tim-icons icon-pin' }"
+          :link="{ name: $t('sidebar.maps'), icon: 'tim-icons icon-pin',path: '/maps/full-screen' }"
         >
-          <sidebar-item
-            :link="{
-              name: $t('sidebar.fullScreenMaps'),
-              path: '/maps/full-screen',
-            }"
-          ></sidebar-item>
         </sidebar-item>
         <sidebar-item
           :link="{
