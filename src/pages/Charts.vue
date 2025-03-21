@@ -1,158 +1,117 @@
 <template>
   <div>
-    <h2 class="text-center">Charts.js</h2>
-    <p class="category text-center">
-      Simple yet flexible JavaScript charting for designers &amp; developers.
-      Made by our friends from
-      <a target="_blank" rel="noopener" href="https://vue-chartjs.org/"
-        >Vue Charts.js</a
-      >. Please check
-      <a
-        target="_blank"
-        rel="noopener"
-        href="https://vue-chartjs.org/guide/#vue-single-file-components"
-        >the full documentation</a
-      >.
-    </p>
+    <!-- Header Section -->
+    <div class="text-center mb-4">
+      <h2>Global Nautisense Dashboard</h2>
+      <p class="category">
+        Monitor worldwide revenues, user activities, operational costs, and general performance.
+      </p>
+    </div>
+
+    <!-- Financial Overview -->
     <div class="row mt-5">
-      <div class="col-md-5 ml-auto">
+      <div class="col-md-4">
         <card class="card-chart" no-footer-line>
           <template slot="header">
-            <h5 class="card-category">Simple With Gradient</h5>
+            <h5 class="card-category">Revenue</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-chart-bar-32 text-primary "></i> 10,000
+              <i class="tim-icons icon-coins text-success"></i> $1,200,000
             </h3>
           </template>
           <div class="chart-area">
             <line-chart
-              :chart-data="lineChart1.chartData"
-              :gradient-colors="lineChart1.gradientColors"
-              :gradient-stops="lineChart1.gradientStops"
-              :extra-options="lineChart1.extraOptions"
+              :chart-data="revenueChart.chartData"
+              :extra-options="revenueChart.extraOptions"
               :height="200"
-            >
-            </line-chart>
+            ></line-chart>
           </div>
         </card>
       </div>
 
-      <div class="col-md-5 mr-auto">
+      <div class="col-md-4">
         <card class="card-chart">
           <template slot="header">
-            <h5 class="card-category">With Numbers and Grid</h5>
+            <h5 class="card-category">Expenses</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-send text-info "></i> 750,000€
+              <i class="tim-icons icon-wallet-43 text-danger"></i> $850,000
+            </h3>
+          </template>
+          <div class="chart-area">
+            <bar-chart
+              :chart-data="expensesChart.chartData"
+              :extra-options="expensesChart.extraOptions"
+              :height="200"
+            ></bar-chart>
+          </div>
+        </card>
+      </div>
+
+      <div class="col-md-4">
+        <card class="card-chart">
+          <template slot="header">
+            <h5 class="card-category">Net Profit</h5>
+            <h3 class="card-title">
+              <i class="tim-icons icon-chart-bar-32 text-info"></i> $350,000
             </h3>
           </template>
           <div class="chart-area">
             <line-chart
-              :labels="lineChart2.labels"
-              :chart-data="lineChart2.chartData"
-              :extra-options="lineChart2.extraOptions"
+              :chart-data="profitChart.chartData"
+              :extra-options="profitChart.extraOptions"
               :height="200"
-            >
-            </line-chart>
-          </div>
-        </card>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5 ml-auto">
-        <card class="card-chart">
-          <template slot="header">
-            <h5 class="card-category">Gradient Bar Chart</h5>
-            <h3 class="card-title">
-              <i class="tim-icons icon-shape-star text-danger "></i> 1,000,000£
-            </h3>
-          </template>
-          <div class="chart-area">
-            <bar-chart
-              :chart-data="barChart1.chartData"
-              :extra-options="barChart1.extraOptions"
-              :gradient-colors="barChart1.gradientColors"
-              :gradient-stops="barChart1.gradientStops"
-              :height="200"
-            >
-            </bar-chart>
-          </div>
-        </card>
-      </div>
-
-      <div class="col-md-5 mr-auto">
-        <card class="card-chart" no-footer-line>
-          <template slot="header">
-            <h5 class="card-category">Multiple Bars Chart With Grid</h5>
-            <h3 class="card-title">
-              <i class="tim-icons icon-time-alarm text-warning "></i> 130,000$
-            </h3>
-          </template>
-          <div class="chart-area">
-            <bar-chart
-              :chart-data="barChart2.chartData"
-              :extra-options="barChart2.extraOptions"
-              :height="200"
-            >
-            </bar-chart>
+            ></line-chart>
           </div>
         </card>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-5 ml-auto">
+    <!-- User Activity Analysis -->
+    <div class="row mt-5">
+      <div class="col-md-6">
         <card class="card-chart card-chart-pie">
-          <h5 slot="header" class="card-category">Simple Pie Chart</h5>
-
+          <h5 slot="header" class="card-category">User Distribution</h5>
           <div class="row">
             <div class="col-6">
               <div class="chart-area">
                 <pie-chart
-                  :chart-data="pieChart1.chartData"
-                  :extra-options="pieChart1.extraOptions"
-                  :height="120"
-                >
-                </pie-chart>
+                  :chart-data="userChart.chartData"
+                  :extra-options="userChart.extraOptions"
+                  :height="150"
+                ></pie-chart>
               </div>
             </div>
-
             <div class="col-6">
               <h4 class="card-title">
-                <i class="tim-icons  icon-trophy text-success "></i> 10.000$
+                <i class="tim-icons icon-single-02 text-primary"></i> 200K Active Users
               </h4>
-              <p class="category">A total of $54000</p>
+              <p class="category">User engagement over the past month</p>
             </div>
           </div>
         </card>
       </div>
 
-      <div class="col-md-5 mr-auto">
-        <card class="card-chart card-chart-pie">
-          <h5 slot="header" class="card-category">Multiple Pie Chart</h5>
-
-          <div class="row">
-            <div class="col-6">
-              <div class="chart-area">
-                <pie-chart
-                  :chart-data="pieChart2.chartData"
-                  :extra-options="pieChart2.extraOptions"
-                  :height="120"
-                >
-                </pie-chart>
-              </div>
-            </div>
-
-            <div class="col-6">
-              <h4 class="card-title">
-                <i class="tim-icons  icon-tag text-warning "></i> 130,000
-              </h4>
-              <p class="category">Feedback from 20.000 users</p>
-            </div>
+      <div class="col-md-6">
+        <card class="card-chart">
+          <template slot="header">
+            <h5 class="card-category">Market Share</h5>
+            <h3 class="card-title">
+              <i class="tim-icons icon-world text-warning"></i> 80% Global
+            </h3>
+          </template>
+          <div class="chart-area">
+            <pie-chart
+              :chart-data="marketShareChart.chartData"
+              :extra-options="marketShareChart.extraOptions"
+              :height="200"
+            ></pie-chart>
           </div>
         </card>
       </div>
     </div>
   </div>
 </template>
+
+
 <script>
 import LineChart from 'src/components/Charts/LineChart';
 import BarChart from 'src/components/Charts/BarChart';
@@ -168,134 +127,38 @@ export default {
   },
   data() {
     return {
-      lineChart1: {
+      revenueChart: {
         chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-          datasets: [
-            {
-              label: 'Data',
-              fill: true,
-              borderColor: config.colors.primary,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              pointBackgroundColor: config.colors.primary,
-              pointBorderColor: 'rgba(255,255,255,0)',
-              pointHoverBackgroundColor: '#be55ed',
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
-              data: [80, 100, 70, 80, 120, 80]
-            }
-          ]
-        },
-        extraOptions: chartConfigs.purpleChartOptions,
-        gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.4, 0]
-      },
-      lineChart2: {
-        chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-          datasets: [
-            {
-              label: 'Data',
-              fill: true,
-              borderColor: config.colors.info,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              pointBackgroundColor: config.colors.info,
-              pointBorderColor: 'rgba(255,255,255,0)',
-              pointHoverBackgroundColor: '#2380f7',
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
-              data: [80, 100, 70, 80, 120, 80]
-            }
-          ]
+          labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'],
+          datasets: [{ label: 'Revenue ($)', data: [200000, 250000, 180000, 220000, 200000, 150000] }]
         },
         extraOptions: chartConfigs.lineChartOptionsBlue
       },
-      barChart1: {
+      expensesChart: {
         chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-          datasets: [
-            {
-              label: 'Data',
-              fill: true,
-              borderColor: config.colors.danger,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              data: [80, 100, 70, 80, 120, 80]
-            }
-          ]
-        },
-        extraOptions: chartConfigs.barChartOptionsGradient,
-        gradientColors: config.colors.purpleGradient,
-        gradientStops: [1, 0]
-      },
-      barChart2: {
-        chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-          datasets: [
-            {
-              label: 'Data',
-              fill: true,
-              backgroundColor: config.colors.orange,
-              hoverBackgroundColor: config.colors.orange,
-              borderColor: config.colors.orange,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              data: [80, 100, 70, 80, 120, 80]
-            },
-            {
-              label: 'Data',
-              fill: true,
-              backgroundColor: config.colors.info,
-              hoverBackgroundColor: config.colors.info,
-              borderColor: config.colors.info,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              data: [60, 110, 90, 70, 90, 100]
-            }
-          ]
+          labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'],
+          datasets: [{ label: 'Expenses ($)', data: [150000, 180000, 170000, 190000, 160000, 100000] }]
         },
         extraOptions: chartConfigs.barChartOptionsGradient
       },
-      pieChart1: {
+      profitChart: {
         chartData: {
-          labels: [1, 2],
-          datasets: [
-            {
-              label: 'Emails',
-              pointRadius: 0,
-              pointHoverRadius: 0,
-              backgroundColor: ['#00c09d', '#e2e2e2'],
-              borderWidth: 0,
-              data: [60, 40]
-            }
-          ]
+          labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'],
+          datasets: [{ label: 'Net Profit ($)', data: [50000, 70000, 10000, 30000, 40000, 50000] }]
+        },
+        extraOptions: chartConfigs.lineChartOptionsBlue
+      },
+      userChart: {
+        chartData: {
+          labels: ['Europe', 'Asia', 'North America', 'Others'],
+          datasets: [{ data: [35, 30, 25, 10], backgroundColor: ['#3498db', '#1abc9c', '#9b59b6', '#f39c12'] }]
         },
         extraOptions: chartConfigs.pieChartOptions
       },
-      pieChart2: {
+      marketShareChart: {
         chartData: {
-          labels: [1, 2, 3],
-          datasets: [
-            {
-              label: 'Emails',
-              pointRadius: 0,
-              pointHoverRadius: 0,
-              backgroundColor: ['#ff8779', '#2a84e9', '#e2e2e2'],
-              borderWidth: 0,
-              data: [60, 40, 20]
-            }
-          ]
+          labels: ['Nautisense', 'Competitors'],
+          datasets: [{ data: [80, 20], backgroundColor: ['#f1c40f', '#e74c3c'] }]
         },
         extraOptions: chartConfigs.pieChartOptions
       }
@@ -303,4 +166,21 @@ export default {
   }
 };
 </script>
-<style></style>
+
+<style scoped>
+.text-center {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.card-category {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+</style>
+
